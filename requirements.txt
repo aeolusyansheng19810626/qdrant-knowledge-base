@@ -6,3 +6,4 @@ streamlit
 python-dotenv
 pypdf
 fastembed
+ragas>=0.2.6,<0.3

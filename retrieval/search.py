@@ -103,6 +103,7 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
             "chunk_index": payload.get("chunk_index", 0),
             "score": round(float(score), 4),
             "text": payload.get("text", "")[:200],
+            "text_full": payload.get("text", ""),
         })
         context_parts.append(
             f"[{payload.get('framework')} / {payload.get('doc_type')}]\n{payload.get('text')}"

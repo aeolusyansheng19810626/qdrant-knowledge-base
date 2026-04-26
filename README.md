@@ -12,6 +12,7 @@
 - **元数据过滤**：支持按框架名称（如 LangChain、Qdrant）和文档类型（教程、API文档等）进行精确过滤。
 - **文档管理**：侧边栏实时展示已上传文档列表，支持一键按文件删除所有关联数据。
 - **溯源展示**：每次回答均附带来源文档信息（文件名、分块索引、相关性得分、文本摘要）。
+- **RAGAS 自动评估**：每次问答后自动运行 RAGAS 评估，在回答下方折叠展示忠实度、回答相关性、检索精度三项指标（0–1 分，颜色标注）。
 
 ---
 
@@ -25,6 +26,8 @@ qdrant-knowledge-base/
 │   └── loader.py           # 文档处理与入库（解析、分块、向量化、存储）
 ├── retrieval/
 │   └── search.py           # 检索与问答（混合检索、Reranker、LLM 生成）
+├── evaluation/
+│   └── evaluator.py        # RAGAS 评估（忠实度、回答相关性、检索精度）
 ├── requirements.txt
 └── .env                    # 环境变量（不提交到版本控制）
 ```
@@ -40,6 +43,7 @@ qdrant-knowledge-base/
 | 融合算法 | RRF（倒数排名融合） |
 | 重排序模型 | `BAAI/bge-reranker-v2-m3` |
 | 大语言模型 | `meta-llama/llama-4-scout-17b-16e-instruct`（via Groq） |
+| RAG 评估框架 | RAGAS（`Faithfulness` / `AnswerRelevancy` / `LLMContextPrecisionWithoutReference`） |
 
 ---
 
@@ -100,6 +104,7 @@ streamlit run app.py
 1. 在主区域可选择按框架和文档类型进行过滤（留空则搜索全库）。
 2. 在底部输入框输入问题，按回车提交。
 3. 系统会返回 AI 生成的答案，点击展开 **"📎 来源文档"** 可查看检索到的原始文本片段。
+4. 答案下方会自动显示 **"📊 RAGAS 评估"**（评估中约需 5–10 秒），展开后可查看忠实度、回答相关性、检索精度的量化分数。
 
 ### 删除文档
 
@@ -150,4 +155,10 @@ streamlit run app.py
          │
          ▼
    返回答案 + 来源文档
+         │
+         ▼
+   RAGAS 评估（Faithfulness / AnswerRelevancy / ContextPrecision）
+         │
+         ▼
+   折叠展示评估分数（绿 ≥ 0.8 / 黄 ≥ 0.5 / 红 < 0.5）
 ```

@@ -6,7 +6,7 @@
 
 ## 项目一句话描述
 
-基于 RAG 架构的 AI 技术文档问答系统：上传 PDF / Markdown → 混合检索（语义 + 关键词）→ Reranker 精排 → LLM 生成答案。
+基于 RAG 架构的 AI 技术文档问答系统：上传 PDF / Markdown → 混合检索（语义 + 关键词）→ Reranker 精排 → LLM 生成答案 → RAGAS 自动评估质量。
 
 ---
 
@@ -20,6 +20,8 @@ qdrant-knowledge-base/
 │   └── loader.py           # 文档处理管道：解析 → 分块 → 双向量化 → 写入 Qdrant
 ├── retrieval/
 │   └── search.py           # 检索管道：混合检索 → RRF 融合 → Reranker → LLM 生成
+├── evaluation/
+│   └── evaluator.py        # RAGAS 评估：run_evaluation() 返回三项指标分数
 ├── requirements.txt
 ├── .env                    # 本地密钥（不提交）
 ├── README.md               # 项目文档（面向人类）
@@ -47,12 +49,24 @@ qdrant-knowledge-base/
 | `build_filter()` | `(framework=None, doc_type=None) -> Filter \| None` | 构造 Qdrant payload 过滤条件 |
 | `search()` | `(query: str, framework=None, doc_type=None, top_k=5) -> tuple[str, list[dict]]` | 完整检索管道，返回 (LLM回答, 来源列表) |
 
+### `evaluation/evaluator.py`
+
+| 函数 | 签名 | 说明 |
+|---|---|---|
+| `run_evaluation()` | `(query: str, answer: str, contexts: list[str]) -> dict \| None` | 运行 RAGAS 评估，返回 `{faithfulness, answer_relevancy, context_precision}` 或 `None` |
+
+- RAGAS LLM 复用 `config.py` 的 Groq 配置（`LangchainLLMWrapper`）
+- RAGAS 嵌入复用 `retrieval/search.py` 的已缓存 `bge-m3`（通过 `_STEmbeddings` 包装），不重复加载模型
+- `LLMContextPrecisionWithoutReference` 不需要标准答案；若该 metric 在已安装版本中不存在，自动跳过
+
 ### `app.py`
 
 无独立函数，为 Streamlit 脚本式代码。关键逻辑位置：
 - **上传逻辑**：`st.button("上传")` 回调块
 - **文档列表 + 删除**：`st.header("已上传文档")` 块，使用 `client.scroll` + `client.delete`
 - **问答**：`st.chat_input` 触发，调用 `search()`
+- **评估**：问答后调用 `run_evaluation()`，用 `st.status` 展示"评估中..."状态，完成后折叠显示分数
+- **`_render_eval_scores()`**：将评估分数渲染为带颜色标注的列布局（绿 ≥ 0.8 / 橙 ≥ 0.5 / 红 < 0.5）
 
 ---
 
@@ -79,11 +93,25 @@ PointStruct(
 
 **已建立 Payload 索引的字段**（可用于 Filter）：`framework`、`doc_type`、`filename`
 
+`search()` 返回的 sources 列表每项结构：
+
+```python
+{
+    "filename": str,
+    "framework": str,
+    "doc_type": str,
+    "chunk_index": int,
+    "score": float,        # reranker 得分
+    "text": str,           # 截断到 200 字，用于 UI 展示
+    "text_full": str,      # 完整文本，用于 RAGAS 评估
+}
+```
+
 ---
 
 ## 重要约定
 
-- **模型加载**：所有模型（dense embedder、sparse embedder、reranker）均通过 `@st.cache_resource` 缓存，**不要**在函数内部直接实例化模型，应调用对应的 `get_xxx()` 函数。
+- **模型加载**：所有模型（dense embedder、sparse embedder、reranker、RAGAS LLM/embeddings）均通过 `@st.cache_resource` 缓存，**不要**在函数内部直接实例化模型，应调用对应的 `get_xxx()` / `_get_xxx()` 函数。RAGAS 的嵌入模型通过 `_STEmbeddings` 复用 `get_dense_embedder()` 的缓存实例，不重复加载。
 - **集合初始化**：`ensure_collection()` 是幂等的，在 `app.py` 启动时调用一次，在 `upload_document()` 内也会调用一次。修改集合结构后需手动在 Qdrant 控制台删除旧集合。
 - **删除操作**：通过 `filename` 字段过滤删除，依赖 `filename` 的 payload 索引，**不要**移除该索引。
 - **分块参数**：`chunk_size=8, overlap=2`，如需调整请同时评估对检索召回率的影响。
@@ -115,6 +143,11 @@ PointStruct(
 → 在 `retrieval/search.py` 的 `build_filter()` 中添加对应的 `FieldCondition`  
 → 在 `ingestion/loader.py` 的 `upload_document()` 的 `payload` 字典中添加字段
 
+### 修改 RAGAS 评估指标
+→ 在 `evaluation/evaluator.py` 的 `run_evaluation()` 中修改 `metrics` 列表  
+→ 若新增指标，在 `run_evaluation()` 底部的 `for` 循环中添加对应的 `(display_key, raw_key)` 映射  
+→ 在 `app.py` 的 `_EVAL_LABELS` 字典中添加对应的中文显示名称
+
 ---
 
 ## 环境变量（`.env`）
@@ -130,3 +163,9 @@ PointStruct(
 ## 已知临时代码
 
 - `retrieval/search.py` 第 89-90 行：有两行 `print` 调试语句用于对比 rerank 前后顺序，正式上线前需删除。
+
+## RAGAS 评估注意事项
+
+- 评估每次调用 Groq API 约 5–10 秒，不阻塞答案显示（`st.status` 在答案渲染后才运行）
+- 评估失败时（API 错误、上下文为空等）静默返回 `None`，UI 显示"评估失败"，不影响问答功能
+- `LLMContextPrecisionWithoutReference` 在 RAGAS < 0.2.6 中不存在，代码会自动跳过该指标
