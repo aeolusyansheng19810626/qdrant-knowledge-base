@@ -1,3 +1,15 @@
+---
+title: Qdrant Knowledge Base
+emoji: 📚
+colorFrom: green
+colorTo: blue
+sdk: streamlit
+sdk_version: "1.56.0"
+python_version: "3.11"
+app_file: app.py
+pinned: false
+---
+
 # 📚 AI 技术文档知识库
 
 基于 RAG（检索增强生成）架构的 AI 技术文档问答系统。支持上传 PDF 和 Markdown 文档，通过混合检索 + Reranker 精准召回相关内容，由 LLM 生成最终答案。
