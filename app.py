@@ -126,12 +126,92 @@ t = I18N[st.session_state.lang]
 # 初始化或检查集合与索引
 ensure_collection()
 
-# Load CSS
-try:
-    with open("styles.css", "r", encoding="utf-8") as f:
-        styles_css = f.read()
-except FileNotFoundError:
-    styles_css = ""
+styles_css = """
+/* ====== Tokens ====== */
+:root {
+  --bg:        #F7F7FB;
+  --bg-2:      #EFEFF5;
+  --surface:   #FFFFFF;
+  --line:      #E8E8F0;
+  --line-2:    #DEDEE8;
+  --line-3:    #C9C9D6;
+  --sidebar-bg:#F8F5FF;
+  --fg:        #0F0F1A;
+  --fg-2:      #2E2E40;
+  --fg-3:      #5E5E73;
+  --fg-4:      #9494A8;
+  --brand:     #4338CA;
+  --brand-2:   #6D28D9;
+  --brand-3:   #8B5CF6;
+  --brand-4:   #A78BFA;
+  --accent:    #7C3AED;
+  --accent-2:  #5B21B6;
+  --electric:  #6366F1;
+  --brand-50:  #F3F0FF;
+  --brand-100: #E5DEFF;
+  --brand-200: #C9BCFF;
+  --brand-300: #A78BFA;
+  --grad-1: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #A855F7 100%);
+  --grad-2: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  --grad-aurora: linear-gradient(120deg, #4338CA 0%, #5B21B6 30%, #6D28D9 55%, #7C3AED 80%, #8B5CF6 100%);
+  --grad-soft: linear-gradient(135deg, #F3F0FF 0%, #FAF5FF 100%);
+  --green:     #10B981;
+  --green-50:  #ECFDF5;
+  --amber:     #F59E0B;
+  --amber-50:  #FFFBEB;
+  --rose:      #F43F5E;
+  --rose-50:   #FFF1F2;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --shadow-sm: 0 1px 2px rgba(24,24,27,.04), 0 0 0 1px rgba(24,24,27,.04);
+  --shadow-md: 0 4px 16px rgba(24,24,27,.06), 0 0 0 1px rgba(24,24,27,.05);
+  --shadow-lg: 0 16px 40px rgba(24,24,27,.08), 0 0 0 1px rgba(24,24,27,.05);
+}
+* { box-sizing: border-box; }
+body {
+  font-family: "Inter","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size: 14px; color: var(--fg); background: var(--bg);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
+.brand-title {
+  font-size: 15px; font-weight: 700;
+  background: var(--grad-aurora);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: .01em;
+}
+.brand-sub { font-size: 11px; color: var(--fg-4); margin-top: 2px; letter-spacing: .04em; text-transform: uppercase; }
+.side-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-4); display: flex; align-items: center; gap: 8px; }
+.foot-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px var(--green-50); }
+.count-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; background: var(--bg-2); color: var(--fg-3); font-size: 10.5px; font-weight: 600; border-radius: 999px; border: 1px solid var(--line-2); }
+.page-title { color: #fff !important; font-size: 15px; margin: 0; }
+.page-sub { color: rgba(255,255,255,.82) !important; font-size: 11.5px; margin-top: 1px; }
+.status { background: rgba(255,255,255,.18) !important; border-color: rgba(255,255,255,.3) !important; color: #fff !important; backdrop-filter: blur(8px); padding: 4px 10px !important; font-size: 11px !important; }
+.status-dot { background: #fff !important; box-shadow: 0 0 0 3px rgba(255,255,255,.25), 0 0 12px rgba(255,255,255,.6) !important; }
+.qa-title-row { display: flex; align-items: center; gap: 10px; }
+.qa-title { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.015em; background: linear-gradient(180deg, var(--fg) 30%, var(--accent-2) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.qa-pill { display: inline-flex; align-items: center; flex-shrink: 0; font-size: 11px; color: #fff; background: var(--grad-2); border: 0; padding: 3px 9px; border-radius: 6px; font-family: "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace; font-weight: 600; box-shadow: 0 4px 10px rgba(99,102,241,.28); }
+.tag { display: inline-flex; align-items: center; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 4px; letter-spacing: .01em; }
+.tag-fw { background: linear-gradient(135deg, #F3F0FF, #EDE9FE); color: var(--accent-2); border: 1px solid var(--brand-200); font-weight: 600; }
+.src-score { margin-left: auto; font-size: 11px; color: #fff; background: var(--grad-2); padding: 2px 7px; border-radius: 4px; font-variant-numeric: tabular-nums; font-weight: 600; box-shadow: 0 2px 6px rgba(99,102,241,.28); }
+.ragas-high::before { background: linear-gradient(180deg, #34D399, #10B981, #059669); }
+.ragas-mid::before  { background: linear-gradient(180deg, #FBBF24, #F59E0B, #D97706); }
+.ragas-low::before  { background: linear-gradient(180deg, #FB7185, #F43F5E, #E11D48); }
+.ragas-high .ragas-fill { background: linear-gradient(90deg, #34D399, #10B981, #059669); box-shadow: 0 0 12px rgba(16,185,129,.45); }
+.ragas-high .ragas-value { color: #047857; }
+.ragas-mid .ragas-fill { background: linear-gradient(90deg, #FBBF24, #F59E0B, #D97706); box-shadow: 0 0 12px rgba(245,158,11,.45); }
+.ragas-mid .ragas-value { color: #B45309; }
+.ragas-low .ragas-fill { background: linear-gradient(90deg, #FB7185, #F43F5E, #E11D48); box-shadow: 0 0 12px rgba(244,63,94,.45); }
+.ragas-low .ragas-value { color: #BE123C; }
+.ragas-overall { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; font-variant-numeric: tabular-nums; }
+.ragas-overall.ragas-high { background: var(--green-50); color: #047857; border: 1px solid #A7F3D0; }
+.ragas-overall.ragas-mid  { background: var(--amber-50); color: #B45309; border: 1px solid #FDE68A; }
+@keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 3px var(--brand-100), 0 0 8px var(--brand-300); } 50% { box-shadow: 0 0 0 4px var(--brand-100), 0 0 16px var(--brand-3); } }
+"""
 
 # Custom Streamlit overrides mapping the design tokens to st components
 streamlit_overrides = """
