@@ -30,6 +30,8 @@ I18N = {
         "add_btn": "添加到知识库",
         "uploaded": "已上传文档",
         "ready": "向量索引 · 已就绪",
+        "error": "向量索引 · 连接失败",
+        "retry": "🔄 重试连接",
         "sidebar_kb": "知识库",
         "sidebar_kb_en": "KNOWLEDGE BASE",
         "chat_ph": "用中文提问，例如：LangGraph 怎么定义节点？",
@@ -66,6 +68,8 @@ I18N = {
         "add_btn": "Add to Knowledge Base",
         "uploaded": "Uploaded Documents",
         "ready": "Vector Index · Ready",
+        "error": "Vector Index · Connection Failed",
+        "retry": "🔄 Retry Connection",
         "sidebar_kb": "Knowledge Base",
         "sidebar_kb_en": "LIBRARY",
         "chat_ph": "Ask a question in English, e.g., How to define a node in LangGraph?",
@@ -102,6 +106,8 @@ I18N = {
         "add_btn": "ナレッジベースに追加",
         "uploaded": "アップロード済みドキュメント",
         "ready": "ベクトルインデックス · 準備完了",
+        "error": "ベクトルインデックス · 接続失敗",
+        "retry": "🔄 再接続",
         "sidebar_kb": "ナレッジベース",
         "sidebar_kb_en": "KNOWLEDGE BASE",
         "chat_ph": "日本語で質問してください、例：LangGraph でノードを定義するには？",
@@ -124,7 +130,14 @@ I18N = {
 t = I18N[st.session_state.lang]
 
 # 初始化或检查集合与索引
-ensure_collection()
+if "index_status" not in st.session_state:
+    try:
+        ensure_collection()
+        st.session_state.index_status = "ready"
+        st.session_state.error_msg = None
+    except Exception as e:
+        st.session_state.index_status = "error"
+        st.session_state.error_msg = str(e)
 
 styles_css = """
 /* ====== Tokens ====== */
@@ -784,11 +797,34 @@ with st.sidebar:
                         st.error(f"删除失败: {e}")
 
     # Footer status
-    st.markdown(f"""
-    <div class="side-foot">
-      <span style="color: var(--green); font-size: 16px; line-height: 1;">✅</span>
-      {t['ready']}
-    </div>
+    if st.session_state.index_status == "ready":
+        st.markdown(f"""
+        <div class="side-foot">
+          <span style="color: var(--green); font-size: 16px; line-height: 1;">✅</span>
+          {t['ready']}
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div class="side-foot" style="color: var(--rose);">
+          <span style="font-size: 16px; line-height: 1;">❌</span>
+          {t['error']}
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button(t['retry'], key="retry_connection", use_container_width=True):
+            try:
+                ensure_collection()
+                st.session_state.index_status = "ready"
+                st.session_state.error_msg = None
+                st.rerun()
+            except Exception as e:
+                st.session_state.error_msg = str(e)
+                st.error(f"连接失败: {e}")
+        if st.session_state.error_msg:
+            st.caption(f"⚠️ {st.session_state.error_msg}")
+    
+    # Author info
+    st.markdown("""
     <div class="side-author">
       Built by <a href="https://github.com/aeolusyansheng19810626" target="_blank">Sheng Yan</a> · <a href="https://github.com/aeolusyansheng19810626/qdrant-knowledge-base" target="_blank">GitHub</a>
     </div>
