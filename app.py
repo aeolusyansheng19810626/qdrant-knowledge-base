@@ -715,8 +715,10 @@ with st.sidebar:
         accept_multiple_files=True,
         label_visibility="collapsed"
     )
-    framework = st.text_input(t["fw_name"], placeholder=t["fw_name_ph"])
-    doc_type = st.selectbox(t["doc_type"], [t["type_tutorial"], t["type_api"], "changelog", t["type_other"]])
+    st.markdown(f'<div class="side-label">{t["fw_name"]}</div>', unsafe_allow_html=True)
+    framework = st.text_input(t["fw_name"], placeholder=t["fw_name_ph"], label_visibility="collapsed")
+    st.markdown(f'<div class="side-label">{t["doc_type"]}</div>', unsafe_allow_html=True)
+    doc_type = st.selectbox(t["doc_type"], [t["type_tutorial"], t["type_api"], "changelog", t["type_other"]], label_visibility="collapsed")
 
     if st.button(t["add_btn"], type="primary", use_container_width=True):
         if not uploaded_files:
