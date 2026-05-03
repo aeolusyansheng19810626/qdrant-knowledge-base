@@ -747,13 +747,12 @@ with st.sidebar:
             with c1:
                 st.markdown(f"""
                 <div class="doc-row">
-                  <div class="doc-row-icon">📄</div>
                   <div class="doc-row-body">
                     <div class="doc-row-name" title="{fname}">{fname}</div>
                     <div class="doc-row-meta">
                       <span class="tag tag-fw">{fw}</span>
                       <span class="dot-sep">·</span>
-                      <span class="doc-row-type">{dt}</span>
+                      <span class="tag tag-fw">{dt}</span>
                     </div>
                   </div>
                 </div>
