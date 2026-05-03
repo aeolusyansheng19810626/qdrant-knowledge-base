@@ -89,42 +89,42 @@ I18N = {
         "empty_kb": "Knowledge base is empty"
     },
     "ja": {
-        "title": "AI 技術ドキュメントナレッジベース",
-        "subtitle": "RAG ベースのドキュメント QA・検索拡張生成",
-        "docs_count": "ベクトル DB · {} ドキュメント",
-        "qa_title": "ドキュメント QA",
+        "title": "AI 技術ﾄﾞｷｭﾒﾝﾄﾅﾚｯｼﾞﾍﾞｰｽ",
+        "subtitle": "RAG ﾍﾞｰｽのﾄﾞｷｭﾒﾝﾄ QA・検索拡張生成",
+        "docs_count": "ﾍﾞｸﾄﾙ DB · {} ﾄﾞｷｭﾒﾝﾄ",
+        "qa_title": "ﾄﾞｷｭﾒﾝﾄ QA",
         "ask": "Ask",
-        "framework": "フレームワーク",
+        "framework": "ﾌﾚｰﾑﾜｰｸ",
         "framework_ph": "空白ですべて検索",
-        "doc_type": "ドキュメントの種類",
+        "doc_type": "ﾄﾞｷｭﾒﾝﾄの種類",
         "type_all": "すべて",
-        "upload": "ドキュメントをアップロード",
-        "drop_text": "ドラッグ＆ドロップまたはクリックでアップロード",
-        "drop_meta": "PDF · MD · 1ファイル ≤ 200MB",
-        "fw_name": "フレームワーク名",
+        "upload": "ﾄﾞｷｭﾒﾝﾄをｱｯﾌﾟﾛｰﾄﾞ",
+        "drop_text": "ﾄﾞﾗｯｸﾞ&ﾄﾞﾛｯﾌﾟまたはｸﾘｯｸでｱｯﾌﾟﾛｰﾄﾞ",
+        "drop_meta": "PDF · MD · 1ﾌｧｲﾙ ≤ 200MB",
+        "fw_name": "ﾌﾚｰﾑﾜｰｸ名",
         "fw_name_ph": "例：LangChain、Qdrant",
-        "add_btn": "ナレッジベースに追加",
-        "uploaded": "アップロード済みドキュメント",
-        "ready": "ベクトルインデックス · 準備完了",
-        "error": "ベクトルインデックス · 接続失敗",
+        "add_btn": "ﾅﾚｯｼﾞﾍﾞｰｽに追加",
+        "uploaded": "ｱｯﾌﾟﾛｰﾄﾞ済みﾄﾞｷｭﾒﾝﾄ",
+        "ready": "ﾍﾞｸﾄﾙｲﾝﾃﾞｯｸｽ · 準備完了",
+        "error": "ﾍﾞｸﾄﾙｲﾝﾃﾞｯｸｽ · 接続失敗",
         "retry": "🔄 再接続",
-        "sidebar_kb": "ナレッジベース",
+        "sidebar_kb": "ﾅﾚｯｼﾞﾍﾞｰｽ",
         "sidebar_kb_en": "KNOWLEDGE BASE",
-        "chat_ph": "日本語で質問してください、例：LangGraph でノードを定義するには？",
+        "chat_ph": "日本語で質問してください、例：LangGraph でﾉｰﾄﾞを定義するには？",
         "searching": "検索中...",
-        "src_docs": "ソースドキュメント",
-        "eval_scores": "RAGAS 評価スコア",
-        "click_fold": "クリックして展開 / 折りたたむ",
+        "src_docs": "ｿｰｽﾄﾞｷｭﾒﾝﾄ",
+        "eval_scores": "RAGAS 評価ｽｺｱ",
+        "click_fold": "ｸﾘｯｸして展開 / 折りたたむ",
         "comprehensive": "総合 {}",
         "faithfulness": "Faithfulness · 忠実度",
         "relevancy": "Answer Relevancy · 関連性",
         "precision": "Context Precision · 精度",
         "related": "関連度 {}%",
         "paragraph": "第 {} 段落",
-        "type_tutorial": "チュートリアル",
-        "type_api": "API ドキュメント",
+        "type_tutorial": "ﾁｭｰﾄﾘｱﾙ",
+        "type_api": "API ﾄﾞｷｭﾒﾝﾄ",
         "type_other": "その他",
-        "empty_kb": "ナレッジベースは空です"
+        "empty_kb": "ﾅﾚｯｼﾞﾍﾞｰｽは空です"
     }
 }
 t = I18N[st.session_state.lang]
@@ -454,27 +454,16 @@ section[data-testid="stSidebar"] [data-testid="stFileUploader"] section:hover {
   border-color: var(--brand-200) !important;
 }
 
-/* Override File Uploader Inner Text */
-[data-testid="stFileUploaderDropzone"] button span,
-[data-testid="stFileUploaderDropzone"] > div > div,
-[data-testid="stFileUploaderDropzone"] p,
-[data-testid="stFileUploaderDropzone"] small,
-[data-testid="stFileUploaderDropzone"] svg {
+/* Hide only the default upload prompt text and icon, keep everything else */
+[data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"],
+[data-testid="stFileUploaderDropzone"] button[kind="secondary"] {
   display: none !important;
 }
-/* Keep the actual file input functional but invisible */
-[data-testid="stFileUploaderDropzone"] button {
-  opacity: 0 !important;
-  position: absolute !important;
-  width: 100% !important;
-  height: 100% !important;
-  top: 0 !important;
-  left: 0 !important;
-  cursor: pointer !important;
-}
+/* Make the dropzone clickable */
 [data-testid="stFileUploaderDropzone"] {
   position: relative !important;
   cursor: pointer !important;
+  min-height: 120px !important;
 }
 [data-testid="stFileUploaderDropzone"]::before {
   /* content dynamically injected */
@@ -775,9 +764,25 @@ with st.sidebar:
     if not docs_dict:
         st.info(t["empty_kb"])
     else:
+        # Document type translation map
+        doc_type_map = {
+            "教程": t["type_tutorial"],
+            "API文档": t["type_api"],
+            "changelog": "changelog",
+            "其他": t["type_other"],
+            # English
+            "Tutorial": t["type_tutorial"],
+            "API Docs": t["type_api"],
+            "Other": t["type_other"],
+            # Japanese
+            "ﾁｭｰﾄﾘｱﾙ": t["type_tutorial"],
+            "API ﾄﾞｷｭﾒﾝﾄ": t["type_api"],
+        }
+        
         for fname, payload in docs_dict.items():
             fw = payload.get("framework", "")
-            dt = payload.get("doc_type", "")
+            dt_raw = payload.get("doc_type", "")
+            dt = doc_type_map.get(dt_raw, dt_raw)  # Translate or use original
             
             c1, c2 = st.columns([0.8, 0.2], gap="small", vertical_alignment="center")
             with c1:
