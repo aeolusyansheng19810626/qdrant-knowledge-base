@@ -455,13 +455,26 @@ section[data-testid="stSidebar"] [data-testid="stFileUploader"] section:hover {
 }
 
 /* Override File Uploader Inner Text */
-[data-testid="stFileUploaderDropzone"] button,
-[data-testid="stFileUploaderDropzone"] span,
-[data-testid="stFileUploaderDropzone"] div,
+[data-testid="stFileUploaderDropzone"] button span,
+[data-testid="stFileUploaderDropzone"] > div > div,
 [data-testid="stFileUploaderDropzone"] p,
 [data-testid="stFileUploaderDropzone"] small,
 [data-testid="stFileUploaderDropzone"] svg {
   display: none !important;
+}
+/* Keep the actual file input functional but invisible */
+[data-testid="stFileUploaderDropzone"] button {
+  opacity: 0 !important;
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  cursor: pointer !important;
+}
+[data-testid="stFileUploaderDropzone"] {
+  position: relative !important;
+  cursor: pointer !important;
 }
 [data-testid="stFileUploaderDropzone"]::before {
   /* content dynamically injected */
