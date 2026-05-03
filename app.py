@@ -29,7 +29,7 @@ I18N = {
         "fw_name_ph": "例如：LangChain、Qdrant",
         "add_btn": "添加到知识库",
         "uploaded": "已上传文档",
-        "ready": "本地索引 · 已就绪",
+        "ready": "向量索引 · 已就绪",
         "sidebar_kb": "知识库",
         "sidebar_kb_en": "KNOWLEDGE BASE",
         "chat_ph": "用中文提问，例如：LangGraph 怎么定义节点？",
@@ -65,7 +65,7 @@ I18N = {
         "fw_name_ph": "e.g., LangChain, Qdrant",
         "add_btn": "Add to Knowledge Base",
         "uploaded": "Uploaded Documents",
-        "ready": "Local Index · Ready",
+        "ready": "Vector Index · Ready",
         "sidebar_kb": "Knowledge Base",
         "sidebar_kb_en": "LIBRARY",
         "chat_ph": "Ask a question in English, e.g., How to define a node in LangGraph?",
@@ -101,7 +101,7 @@ I18N = {
         "fw_name_ph": "例：LangChain、Qdrant",
         "add_btn": "ナレッジベースに追加",
         "uploaded": "アップロード済みドキュメント",
-        "ready": "ローカルインデックス · 準備完了",
+        "ready": "ベクトルインデックス · 準備完了",
         "sidebar_kb": "ナレッジベース",
         "sidebar_kb_en": "KNOWLEDGE BASE",
         "chat_ph": "日本語で質問してください、例：LangGraph でノードを定義するには？",
@@ -187,6 +187,10 @@ input, textarea, select { font-family: inherit; font-size: inherit; color: inher
 .brand-sub { font-size: 11px; color: var(--fg-4); margin-top: 2px; letter-spacing: .04em; text-transform: uppercase; }
 .side-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-4); display: flex; align-items: center; gap: 8px; }
 .foot-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px var(--green-50); }
+.side-foot { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 11px; color: var(--fg-3); display: flex; align-items: center; gap: 8px; }
+.side-author { margin-top: 16px; padding-top: 12px; font-size: 11px; color: var(--fg-4); text-align: center; }
+.side-author a { color: var(--brand); text-decoration: none; font-weight: 500; }
+.side-author a:hover { color: var(--brand-2); text-decoration: underline; }
 .count-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; background: var(--bg-2); color: var(--fg-3); font-size: 10.5px; font-weight: 600; border-radius: 999px; border: 1px solid var(--line-2); }
 .page-title { color: #fff !important; font-size: 15px; margin: 0; }
 .page-sub { color: rgba(255,255,255,.82) !important; font-size: 11.5px; margin-top: 1px; }
@@ -776,8 +780,11 @@ with st.sidebar:
     # Footer status
     st.markdown(f"""
     <div class="side-foot">
-      <div class="foot-dot"></div>
+      <span style="color: var(--green); font-size: 16px; line-height: 1;">✅</span>
       {t['ready']}
+    </div>
+    <div class="side-author">
+      Built by <a href="https://github.com/aeolusyansheng19810626" target="_blank">Sheng Yan</a> · <a href="https://github.com/aeolusyansheng19810626/qdrant-knowledge-base" target="_blank">GitHub</a>
     </div>
     """, unsafe_allow_html=True)
 
