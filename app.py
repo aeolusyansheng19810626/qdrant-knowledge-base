@@ -191,6 +191,12 @@ input, textarea, select { font-family: inherit; font-size: inherit; color: inher
 .side-author { margin-top: 16px; padding-top: 12px; font-size: 11px; color: var(--fg-4); text-align: center; }
 .side-author a { color: var(--brand); text-decoration: none; font-weight: 500; }
 .side-author a:hover { color: var(--brand-2); text-decoration: underline; }
+.doc-row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px; margin-bottom: 8px; transition: all .15s; }
+.doc-row:hover { background: var(--brand-50); border-color: var(--brand-200); }
+.doc-row-body { display: flex; flex-direction: column; gap: 6px; }
+.doc-row-name { font-size: 13px; font-weight: 500; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-row-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.dot-sep { color: var(--fg-4); font-size: 10px; }
 .count-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; background: var(--bg-2); color: var(--fg-3); font-size: 10.5px; font-weight: 600; border-radius: 999px; border: 1px solid var(--line-2); }
 .page-title { color: #fff !important; font-size: 15px; margin: 0; }
 .page-sub { color: rgba(255,255,255,.82) !important; font-size: 11.5px; margin-top: 1px; }
