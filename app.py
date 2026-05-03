@@ -412,7 +412,9 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div:focus-within {
   box-shadow: none !important;
   background: transparent !important;
 }
-section[data-testid="stSidebar"] label {
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] label,
+section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
   font-size: 11px !important; color: var(--fg-4) !important; font-weight: 600 !important;
   margin-bottom: 4px !important; letter-spacing: .08em !important; text-transform: uppercase !important;
 }
