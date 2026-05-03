@@ -413,8 +413,8 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div:focus-within {
   background: transparent !important;
 }
 section[data-testid="stSidebar"] label {
-  font-size: 12px !important; color: var(--fg-3) !important; font-weight: 500 !important;
-  margin-bottom: 4px !important;
+  font-size: 11px !important; color: var(--fg-4) !important; font-weight: 600 !important;
+  margin-bottom: 4px !important; letter-spacing: .08em !important; text-transform: uppercase !important;
 }
 
 section[data-testid="stSidebar"] [data-testid="stFileUploader"] section {
