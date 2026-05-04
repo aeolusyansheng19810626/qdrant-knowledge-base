@@ -37,7 +37,7 @@ def ensure_collection():
             },
         )
     
-    # 确保索引存在（如果已存在会直接跳过或覆盖）
+    # インデックスの存在を確認（既存の場合はスキップまたは上書き）
     for field in ["framework", "doc_type", "filename"]:
         client.create_payload_index(
             collection_name=COLLECTION_NAME,
@@ -54,25 +54,25 @@ def extract_text(file) -> str:
         content = file.read()
         if isinstance(content, bytes):
             content = content.decode("utf-8")
-        # 去掉 Markdown 语法符号，保留纯文本
-        content = re.sub(r'#{1,6}\s+', '', content)       # 标题
-        content = re.sub(r'\*{1,2}(.+?)\*{1,2}', r'\1', content)  # 粗体/斜体
-        content = re.sub(r'`{1,3}[^`]*`{1,3}', '', content)       # 代码块
-        content = re.sub(r'\[(.+?)\]\(.+?\)', r'\1', content)      # 链接
-        content = re.sub(r'^\s*[-*+]\s+', '', content, flags=re.MULTILINE)  # 列表
+        # Markdown構文記号を除去し、プレーンテキストのみ保持
+        content = re.sub(r'#{1,6}\s+', '', content)       # 見出し
+        content = re.sub(r'\*{1,2}(.+?)\*{1,2}', r'\1', content)  # 太字/斜体
+        content = re.sub(r'`{1,3}[^`]*`{1,3}', '', content)       # コードブロック
+        content = re.sub(r'\[(.+?)\]\(.+?\)', r'\1', content)      # リンク
+        content = re.sub(r'^\s*[-*+]\s+', '', content, flags=re.MULTILINE)  # リスト
         return content
     else:
         raise ValueError(f"不支持的文件类型：{filename}")
 
 def split_into_sentences(text: str) -> list[str]:
-    """按句子边界切分文本"""
+    """文を境界で分割"""
     text = re.sub(r'\s+', ' ', text).strip()
     sentences = re.split(r'(?<=[.!?。！？])\s+', text)
     sentences = [s.strip() for s in sentences if len(s.strip()) > 20]
     return sentences
 
 def chunk_by_sentences(sentences: list[str], chunk_size: int = 8, overlap: int = 2) -> list[str]:
-    """按句子数量分块，带重叠"""
+    """文の数でチャンク分割（オーバーラップあり）"""
     chunks = []
     i = 0
     while i < len(sentences):

@@ -17,7 +17,7 @@ except ImportError:
 
 
 class _STEmbeddings(Embeddings):
-    """Wraps the already-cached SentenceTransformer to avoid loading bge-m3 twice."""
+    """キャッシュ済みのSentenceTransformerをラップしてbge-m3の二重ロードを回避"""
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         return get_dense_embedder().encode(texts).tolist()
@@ -37,7 +37,7 @@ def _get_ragas_embeddings() -> LangchainEmbeddingsWrapper:
 
 
 def run_evaluation(query: str, answer: str, contexts: list[str]) -> dict | None:
-    """Run RAGAS evaluation and return a dict of {metric_key: float} or None on failure."""
+    """RAGAS評価を実行し、{metric_key: float}の辞書を返す。失敗時はNoneを返す"""
     if not contexts:
         return None
     try:

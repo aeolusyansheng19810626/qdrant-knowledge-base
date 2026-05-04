@@ -44,7 +44,7 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
     sparse_embedder = get_sparse_embedder()
     reranker = get_reranker()
 
-    # 1. 生成查询向量
+    # 1. クエリベクトルの生成
     dense_vector = dense_embedder.encode(query).tolist()
     sparse_result = list(sparse_embedder.embed([query]))[0]
     sparse_vector = SparseVector(
@@ -54,7 +54,7 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
 
     query_filter = build_filter(framework, doc_type)
 
-    # 2. 混合检索召回 top-20
+    # 2. ハイブリッド検索でTop-20を取得
     results = client.query_points(
         collection_name=COLLECTION_NAME,
         prefetch=[
@@ -79,7 +79,7 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
     if not results:
         return "未找到相关文档，请尝试调整过滤条件或关键词。", []
 
-    # 3. Reranker 重排，取 top_k
+    # 3. Rerankerで再ランキング、Top-kを取得
     texts = [r.payload["text"] for r in results]
     pairs = [[query, text] for text in texts]
     scores = reranker.predict(pairs)
@@ -91,7 +91,7 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
     
     top_ranked = reranked_with_scores[:top_k]
 
-    # 4. 组装来源 + context
+    # 4. ソース情報とコンテキストの組み立て
     sources = []
     context_parts = []
     for score, r in top_ranked:

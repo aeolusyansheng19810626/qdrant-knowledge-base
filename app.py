@@ -7,9 +7,9 @@ from config import COLLECTION_NAME
 
 st.set_page_config(page_title="AI 技术文档知识库", layout="wide", initial_sidebar_state="expanded")
 
-# 初始化语言状态
+# 言語状態の初期化
 if "lang" not in st.session_state:
-    st.session_state.lang = "zh"
+    st.session_state.lang = "en"
 
 I18N = {
     "zh": {
@@ -129,7 +129,7 @@ I18N = {
 }
 t = I18N[st.session_state.lang]
 
-# 初始化或检查集合与索引
+# コレクションとインデックスの初期化・確認
 if "index_status" not in st.session_state:
     try:
         ensure_collection()
@@ -140,7 +140,7 @@ if "index_status" not in st.session_state:
         st.session_state.error_msg = str(e)
 
 styles_css = """
-/* ====== Tokens ====== */
+/* ====== デザイントークン ====== */
 :root {
   --bg:        #F7F7FB;
   --bg-2:      #EFEFF5;
@@ -236,7 +236,7 @@ input, textarea, select { font-family: inherit; font-size: inherit; color: inher
 @keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 3px var(--brand-100), 0 0 8px var(--brand-300); } 50% { box-shadow: 0 0 0 4px var(--brand-100), 0 0 16px var(--brand-3); } }
 """
 
-# Custom Streamlit overrides mapping the design tokens to st components
+# Streamlitコンポーネントへのデザイントークンマッピング
 streamlit_overrides = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
 html, body, [class*="css"], .stApp {
@@ -321,12 +321,12 @@ div[data-testid="stPopoverBody"] button[kind="primary"]:hover {
 }
 div[data-testid="stPopoverBody"] button p { margin: 0 !important; width: 100%; font-size: 12.5px !important; }
 
-/* 隐藏 Streamlit 顶部菜单/页脚 */
+/* Streamlitのトップメニュー・フッターを非表示 */
 #MainMenu, footer { visibility: hidden; height: 0; }
 header[data-testid="stHeader"] { height: 0 !important; min-height: 0 !important; background: transparent !important; box-shadow: none !important; overflow: visible !important; }
 .stAppDeployButton { display: none !important; }
 
-/* 将侧边栏展开按钮层级调高，防止被 Topbar 遮挡 */
+/* サイドバー展開ボタンのz-indexを上げてTopbarに隠れないようにする */
 [data-testid="stSidebarExpandButton"], 
 [data-testid="stSidebarCollapseButton"] {
   z-index: 9999999 !important;
@@ -346,7 +346,7 @@ header[data-testid="stHeader"] { height: 0 !important; min-height: 0 !important;
   z-index: 9999998 !important;
 }
 
-/* 主区域边距与内补 */
+/* メインエリアのマージンとパディング */
 .block-container { 
   padding-top: 64px !important; 
   padding-bottom: 120px !important; 
@@ -356,7 +356,7 @@ header[data-testid="stHeader"] { height: 0 !important; min-height: 0 !important;
   margin: 0 !important;
 }
 
-/* ================= Sidebar ================= */
+/* ================= サイドバー ================= */
 section[data-testid="stSidebar"][aria-expanded="true"] {
   background: var(--sidebar-bg) !important;
   border-right: 1px solid var(--line);
@@ -429,7 +429,7 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div:focus-within {
   border-color: var(--brand-3) !important;
   box-shadow: 0 0 0 3px var(--brand-50) !important;
 }
-/* 防止内部 input（如 select 的 combobox）获得边框 */
+/* 内部input（selectのcomboboxなど）のボーダーを無効化 */
 [data-baseweb="select"] input {
   border: none !important;
   box-shadow: none !important;
@@ -454,19 +454,19 @@ section[data-testid="stSidebar"] [data-testid="stFileUploader"] section:hover {
   border-color: var(--brand-200) !important;
 }
 
-/* Hide only the default upload prompt text and icon, keep everything else */
+/* デフォルトのアップロードプロンプトテキストとアイコンのみ非表示、他は保持 */
 [data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"],
 [data-testid="stFileUploaderDropzone"] button[kind="secondary"] {
   display: none !important;
 }
-/* Make the dropzone clickable */
+/* ドロップゾーンをクリック可能にする */
 [data-testid="stFileUploaderDropzone"] {
   position: relative !important;
   cursor: pointer !important;
   min-height: 120px !important;
 }
 [data-testid="stFileUploaderDropzone"]::before {
-  /* content dynamically injected */
+  /* コンテンツは動的に挿入 */
   display: block;
   font-size: 14px;
   font-weight: 500;
@@ -480,7 +480,7 @@ section[data-testid="stSidebar"] [data-testid="stFileUploader"] section:hover {
   background-repeat: no-repeat;
 }
 [data-testid="stFileUploaderDropzone"]::after {
-  /* content dynamically injected */
+  /* コンテンツは動的に挿入 */
   display: block;
   font-size: 11px;
   color: var(--fg-4);
@@ -505,11 +505,11 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
   box-shadow: 0 10px 22px rgba(124,58,237,.35) !important;
 }
 
-/* ================= 主区顶部 Banner (极致修复宽度) ================= */
+/* ================= メインエリア上部バナー（幅の完全修正） ================= */
 .topbar-wrapper .topbar {
   position: fixed !important;
   top: 0 !important;
-  left: 300px !important; /* 假设侧边栏宽度300px */
+  left: 300px !important; /* サイドバー幅を300pxと想定 */
   right: 0 !important;
   height: 60px !important;
   padding: 0 32px !important;
@@ -520,7 +520,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
   align-items: center !important;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
 }
-/* 如果侧边栏被收起，让 topbar 充满 */
+/* サイドバーが閉じている場合、topbarを全幅に */
 @media (max-width: 768px) {
   .topbar-wrapper .topbar { left: 0 !important; }
 }
@@ -541,7 +541,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
 .status { display: inline-flex !important; align-items: center !important; gap: 6px !important; padding: 4px 12px !important; border: 1px solid rgba(255,255,255,.3) !important; border-radius: 999px !important; color: white !important; font-size: 11px !important; }
 .status-dot { width: 6px !important; height: 6px !important; border-radius: 50% !important; background: white !important; flex-shrink: 0 !important; }
 
-/* ================= 主区表单（过滤器） ================= */
+/* ================= メインエリアフォーム（フィルター） ================= */
 .block-container [data-baseweb="input"] > div,
 .block-container [data-baseweb="textarea"] > div,
 .block-container [data-baseweb="select"] > div {
@@ -561,7 +561,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
 .block-container label { font-size: 11px !important; font-weight: 600 !important;
   color: var(--fg-3) !important; letter-spacing: .04em; text-transform: uppercase; }
 
-/* ================= 对话气泡 (像素级修正) ================= */
+/* ================= チャットバブル（ピクセル単位の調整） ================= */
 .msg-hook { display: none !important; }
 
 [data-testid="stChatMessage"] {
@@ -574,7 +574,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
   align-items: flex-start !important;
 }
 
-/* User Message */
+/* ユーザーメッセージ */
 [data-testid="stChatMessage"]:has(.msg-user) {
   flex-direction: row-reverse !important;
   justify-content: flex-start !important;
@@ -596,7 +596,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
   align-self: center !important;
 }
 [data-testid="stChatMessage"]:has(.msg-user) [data-testid="stChatMessageContent"] p { color: #fff !important; margin: 0 !important;}
-/* Zero out inner container spacing so text sits flush inside the bubble */
+/* 内部コンテナのスペーシングをゼロにしてテキストをバブル内にぴったり配置 */
 [data-testid="stChatMessage"]:has(.msg-user) [data-testid="stChatMessageContent"] [data-testid="stVerticalBlock"] {
   gap: 0 !important;
   padding: 0 !important;
@@ -608,7 +608,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
   padding: 0 !important;
 }
 
-/* Assistant Message */
+/* アシスタントメッセージ */
 [data-testid="stChatMessage"]:has(.msg-assistant) {
   justify-content: flex-start !important;
 }
@@ -631,7 +631,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
   border-radius: 14px 0 0 4px !important;
 }
 
-/* Avatars */
+/* アバター */
 [data-testid="stChatMessage"] > div:first-child {
   width: 36px !important; height: 36px !important; min-width: 36px !important;
   display: flex !important; align-items: center !important; justify-content: center !important;
@@ -669,7 +669,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
 [data-testid="stExpander"] summary:hover { background: var(--bg-2) !important; }
 [data-testid="stExpander"] [data-testid="stExpanderDetails"] { padding: 16px !important; border-top: 1px solid var(--line); background: transparent !important; }
 
-/* ================= chat_input ================= */
+/* ================= チャット入力 ================= */
 [data-testid="stChatInput"] {
   background: var(--surface) !important;
   border: 1px solid var(--line-2) !important;
@@ -684,7 +684,7 @@ section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
 }
 [data-testid="stChatInputSubmitButton"] svg { fill: white !important; }
 
-/* 防止源卡片样式挤压 */
+/* ソースカードのスタイル崩れを防止 */
 .src-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
 .src-card { background: white !important; padding: 14px !important; border: 1px solid var(--line) !important; border-radius: 10px !important; }
 .ragas-grid { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 12px !important; }
@@ -700,7 +700,7 @@ dynamic_css = f"""
 """
 st.markdown(f"<style>\n{styles_css}\n{streamlit_overrides}\n{dynamic_css}\n</style>", unsafe_allow_html=True)
 
-# --- Helper ---
+# --- ヘルパー関数 ---
 def get_docs_count():
     try:
         results, _ = client.scroll(
@@ -715,7 +715,7 @@ def get_docs_count():
 
 docs_count, docs_dict = get_docs_count()
 
-# ── 侧边栏：管理文档 ──────────────────────────────────────
+# ── サイドバー：ドキュメント管理 ──────────────────────────────────────
 with st.sidebar:
     st.markdown(f"""
     <div class="brand">
@@ -764,7 +764,7 @@ with st.sidebar:
     if not docs_dict:
         st.info(t["empty_kb"])
     else:
-        # Document type translation map
+        # ドキュメント種別の翻訳マップ
         doc_type_map = {
             "教程": t["type_tutorial"],
             "API文档": t["type_api"],
@@ -814,7 +814,7 @@ with st.sidebar:
                     except Exception as e:
                         st.error(f"删除失败: {e}")
 
-    # Footer status
+    # フッターステータス
     if st.session_state.index_status == "ready":
         st.markdown(f"""
         <div class="side-foot">
@@ -841,14 +841,14 @@ with st.sidebar:
         if st.session_state.error_msg:
             st.caption(f"⚠️ {st.session_state.error_msg}")
     
-    # Author info
+    # 作者情報
     st.markdown("""
     <div class="side-author">
       Built by <a href="https://github.com/aeolusyansheng19810626" target="_blank">Sheng Yan</a> · <a href="https://github.com/aeolusyansheng19810626/qdrant-knowledge-base" target="_blank">GitHub</a>
     </div>
     """, unsafe_allow_html=True)
 
-# ── 主区域：问答 ──────────────────────────────────────────
+# ── メインエリア：質問応答 ──────────────────────────────────────────
 st.markdown(f"""
 <div class="topbar-wrapper">
 <div class="topbar">
@@ -872,7 +872,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Language Switcher Popover Code
+# 言語切り替えポップオーバー
 pop_col = st.container()
 with pop_col:
     lang_labels = {"zh": "中", "en": "EN", "ja": "日"}
@@ -888,7 +888,7 @@ with pop_col:
                 st.session_state.lang = code
                 st.rerun()
 
-# 过滤器
+# フィルター
 col1, col2 = st.columns(2, gap="medium")
 with col1:
     filter_framework = st.text_input(t["framework"], placeholder=t["framework_ph"])
@@ -898,7 +898,7 @@ with col2:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# --- Render Helpers ---
+# --- レンダリングヘルパー ---
 def tier(v): 
     return "high" if v >= 0.8 else "mid" if v >= 0.6 else "low"
 
@@ -939,7 +939,7 @@ def render_ragas(ragas):
 {ragas_row(t["precision"], ragas.get('context_precision', 0))}
 </div>""", unsafe_allow_html=True)
 
-# 展示历史聊天记录
+# チャット履歴の表示
 for msg in st.session_state.chat_history:
     avatar_arg = "✨" if msg["role"] == "assistant" else None
     with st.chat_message(msg["role"], avatar=avatar_arg):
@@ -954,7 +954,7 @@ for msg in st.session_state.chat_history:
             if msg.get("eval_scores"):
                 render_ragas(msg["eval_scores"])
 
-# 输入框
+# 入力欄
 if query := st.chat_input(t["chat_ph"]):
     with st.chat_message("user"):
         st.markdown(f'<span class="msg-hook msg-user"></span>{query}', unsafe_allow_html=True)
@@ -974,7 +974,7 @@ if query := st.chat_input(t["chat_ph"]):
         if sources:
             render_sources(sources)
 
-        # 后台评估
+        # バックグラウンド評価
         eval_scores = None
         contexts = [s["text_full"] for s in sources] if sources else []
         if contexts:
