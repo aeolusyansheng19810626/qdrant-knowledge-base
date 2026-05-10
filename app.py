@@ -968,6 +968,7 @@ if query := st.chat_input(t["chat_ph"]):
                 query,
                 framework=filter_framework if filter_framework else None,
                 doc_type=dt_filter,
+                lang=st.session_state.lang,
             )
         st.markdown(answer)
         

@@ -39,7 +39,7 @@ def build_filter(framework: str = None, doc_type: str = None):
         conditions.append(FieldCondition(key="doc_type", match=MatchValue(value=doc_type)))
     return Filter(must=conditions) if conditions else None
 
-def search(query: str, framework: str = None, doc_type: str = None, top_k: int = 5) -> tuple[str, list[dict]]:
+def search(query: str, framework: str = None, doc_type: str = None, top_k: int = 5, lang: str = "zh") -> tuple[str, list[dict]]:
     dense_embedder = get_dense_embedder()
     sparse_embedder = get_sparse_embedder()
     reranker = get_reranker()
@@ -110,8 +110,16 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
         )
 
     context = "\n\n".join(context_parts)
+    
+    lang_instructions = {
+        "zh": "用中文回答",
+        "en": "Please answer in English",
+        "ja": "日本語で回答してください"
+    }
+    lang_instruction = lang_instructions.get(lang, "用中文回答")
+    
     messages = [
-        SystemMessage(content="你是一个 AI 技术文档助手。根据以下文档内容回答用户问题，用中文回答，回答要简洁准确。"),
+        SystemMessage(content=f"你是一个 AI 技术文档助手。根据以下文档内容回答用户问题，{lang_instruction}，回答要简洁准确。"),
         HumanMessage(content=f"文档内容：\n{context}\n\n问题：{query}"),
     ]
     response = llm.invoke(messages)
