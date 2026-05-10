@@ -77,7 +77,12 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
     ).points
 
     if not results:
-        return "未找到相关文档，请尝试调整过滤条件或关键词。", []
+        no_doc_msg = {
+            "zh": "未找到相关文档，请尝试调整过滤条件或关键词。",
+            "en": "No relevant documents found. Please try adjusting filters or keywords.",
+            "ja": "関連ドキュメントが見つかりませんでした。フィルター条件やキーワードを調整して再試行してください。"
+        }
+        return no_doc_msg.get(lang, "未找到相关文档，请尝试调整过滤条件或关键词。"), []
 
     # 3. Rerankerで再ランキング、Top-kを取得
     texts = [r.payload["text"] for r in results]

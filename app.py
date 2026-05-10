@@ -931,7 +931,12 @@ def render_sources(sources):
 def render_ragas(ragas):
     with st.expander(f"📊 {t['eval_scores']}", expanded=True):
         if not ragas:
-            st.caption("⚠️ 评估暂时不可用（API 限速或网络超时）")
+            err_msg = {
+                "zh": "⚠️ 评估暂时不可用（API 限速或网络超时）",
+                "en": "⚠️ Evaluation temporarily unavailable (API rate limit or network timeout)",
+                "ja": "⚠️ 評価は一時的に利用できません（API制限またはネットワークタイムアウト）"
+            }
+            st.caption(err_msg.get(st.session_state.lang, "⚠️ 评估暂时不可用（API 限速或网络超时）"))
             return
         st.markdown(f"""<div class="ragas-grid">
 {ragas_row(t["faithfulness"],  ragas.get('faithfulness', 0))}
@@ -979,7 +984,12 @@ if query := st.chat_input(t["chat_ph"]):
         eval_scores = None
         contexts = [s["text_full"] for s in sources] if sources else []
         if contexts:
-            with st.spinner("📊 RAGAS 评估中..."):
+            spinner_msg = {
+                "zh": "📊 RAGAS 评估中...",
+                "en": "📊 Running RAGAS Evaluation...",
+                "ja": "📊 RAGAS 評価中..."
+            }
+            with st.spinner(spinner_msg.get(st.session_state.lang, "📊 RAGAS 评估中...")):
                 eval_scores = run_evaluation(query, answer, contexts)
         render_ragas(eval_scores)
 
