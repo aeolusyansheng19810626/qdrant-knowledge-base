@@ -915,11 +915,26 @@ def ragas_row(label, v):
 
 def render_sources(sources):
     if not sources: return
+    
+    doc_type_map = {
+        "教程": t["type_tutorial"],
+        "API文档": t["type_api"],
+        "changelog": "changelog",
+        "其他": t["type_other"],
+        "Tutorial": t["type_tutorial"],
+        "API Docs": t["type_api"],
+        "Other": t["type_other"],
+        "ﾁｭｰﾄﾘｱﾙ": t["type_tutorial"],
+        "チュートリアル": t["type_tutorial"],
+        "API ﾄﾞｷｭﾒﾝﾄ": t["type_api"],
+        "API ドキュメント": t["type_api"],
+    }
+    
     with st.expander(f"{t['src_docs']}  {len(sources)}", expanded=True):
         cards = "".join([f"""<div class="src-card">
 <div class="src-head">
 <span class="tag tag-fw">{s['framework']}</span>
-<span class="src-type">{s['doc_type']}</span>
+<span class="src-type">{doc_type_map.get(s['doc_type'], s['doc_type'])}</span>
 <span class="src-score">{t['related'].format(int(s['score']*100))}</span>
 </div>
 <div class="src-title">{s['filename']}</div>
