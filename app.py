@@ -968,7 +968,7 @@ if query := st.chat_input(t["chat_ph"]):
     with st.chat_message("assistant", avatar="✨"):
         st.markdown('<span class="msg-hook msg-assistant"></span>', unsafe_allow_html=True)
         with st.spinner(t["searching"]):
-            dt_filter = filter_doc_type if filter_doc_type != "全部" else None
+            dt_filter = filter_doc_type if filter_doc_type != t["type_all"] else None
             answer, sources = search(
                 query,
                 framework=filter_framework if filter_framework else None,

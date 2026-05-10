@@ -33,9 +33,10 @@ def get_reranker():
 
 def build_filter(framework: str = None, doc_type: str = None):
     conditions = []
-    if framework and framework != "全部":
+    all_vals = {"全部", "All", "すべて"}
+    if framework and framework not in all_vals:
         conditions.append(FieldCondition(key="framework", match=MatchValue(value=framework)))
-    if doc_type and doc_type != "全部":
+    if doc_type and doc_type not in all_vals:
         conditions.append(FieldCondition(key="doc_type", match=MatchValue(value=doc_type)))
     return Filter(must=conditions) if conditions else None
 
