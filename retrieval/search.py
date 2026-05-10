@@ -1,6 +1,6 @@
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
-    Filter, FieldCondition, MatchValue,
+    Filter, FieldCondition, MatchValue, MatchAny,
     FusionQuery, Prefetch, Fusion,
     SparseVector,
 )
@@ -37,7 +37,31 @@ def build_filter(framework: str = None, doc_type: str = None):
     if framework and framework not in all_vals:
         conditions.append(FieldCondition(key="framework", match=MatchValue(value=framework)))
     if doc_type and doc_type not in all_vals:
-        conditions.append(FieldCondition(key="doc_type", match=MatchValue(value=doc_type)))
+        doc_type_equivalents = {
+            "教程": ["教程", "Tutorial", "ﾁｭｰﾄﾘｱﾙ", "チュートリアル"],
+            "Tutorial": ["教程", "Tutorial", "ﾁｭｰﾄﾘｱﾙ", "チュートリアル"],
+            "ﾁｭｰﾄﾘｱﾙ": ["教程", "Tutorial", "ﾁｭｰﾄﾘｱﾙ", "チュートリアル"],
+            "チュートリアル": ["教程", "Tutorial", "ﾁｭｰﾄﾘｱﾙ", "チュートリアル"],
+
+            "API文档": ["API文档", "API Docs", "API ﾄﾞｷｭﾒﾝﾄ", "API ドキュメント"],
+            "API Docs": ["API文档", "API Docs", "API ﾄﾞｷｭﾒﾝﾄ", "API ドキュメント"],
+            "API ﾄﾞｷｭﾒﾝﾄ": ["API文档", "API Docs", "API ﾄﾞｷｭﾒﾝﾄ", "API ドキュメント"],
+            "API ドキュメント": ["API文档", "API Docs", "API ﾄﾞｷｭﾒﾝﾄ", "API ドキュメント"],
+
+            "其他": ["其他", "Other", "その他"],
+            "Other": ["其他", "Other", "その他"],
+            "その他": ["其他", "Other", "その他"],
+            
+            "changelog": ["changelog"]
+        }
+        
+        # 查找等价列表，如果存在则用 MatchAny，否则用 MatchValue
+        eq_list = doc_type_equivalents.get(doc_type)
+        if eq_list:
+            conditions.append(FieldCondition(key="doc_type", match=MatchAny(any=eq_list)))
+        else:
+            conditions.append(FieldCondition(key="doc_type", match=MatchValue(value=doc_type)))
+            
     return Filter(must=conditions) if conditions else None
 
 def search(query: str, framework: str = None, doc_type: str = None, top_k: int = 5, lang: str = "zh") -> tuple[str, list[dict]]:
