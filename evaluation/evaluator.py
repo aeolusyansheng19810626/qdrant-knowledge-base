@@ -5,8 +5,8 @@ from ragas.metrics import Faithfulness, AnswerRelevancy
 from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from langchain_core.embeddings import Embeddings
-from langchain_groq import ChatGroq
-from config import GROQ_API_KEY, LLM_MODEL
+from langchain_openai import ChatOpenAI
+from config import GEMINI_API_KEY, GEMINI_BASE_URL, LLM_MODEL
 from retrieval.search import get_dense_embedder
 
 try:
@@ -28,7 +28,7 @@ class _STEmbeddings(Embeddings):
 
 @st.cache_resource
 def _get_ragas_llm() -> LangchainLLMWrapper:
-    return LangchainLLMWrapper(ChatGroq(api_key=GROQ_API_KEY, model=LLM_MODEL))
+    return LangchainLLMWrapper(ChatOpenAI(api_key=GEMINI_API_KEY, base_url=GEMINI_BASE_URL, model=LLM_MODEL))
 
 
 @st.cache_resource

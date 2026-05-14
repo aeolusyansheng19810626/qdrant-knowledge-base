@@ -6,18 +6,18 @@ from qdrant_client.models import (
 )
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from fastembed import SparseTextEmbedding
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 import streamlit as st
 from config import (
     QDRANT_URL, QDRANT_API_KEY, EMBEDDING_MODEL,
-    COLLECTION_NAME, GROQ_API_KEY, LLM_MODEL
+    COLLECTION_NAME, GEMINI_API_KEY, GEMINI_BASE_URL, LLM_MODEL
 )
 
 RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
 
 client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, timeout=60)
-llm = ChatGroq(api_key=GROQ_API_KEY, model=LLM_MODEL)
+llm = ChatOpenAI(api_key=GEMINI_API_KEY, base_url=GEMINI_BASE_URL, model=LLM_MODEL)
 
 @st.cache_resource
 def get_dense_embedder():
