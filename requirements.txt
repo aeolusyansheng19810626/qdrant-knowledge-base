@@ -2,6 +2,7 @@ qdrant-client[fastembed]
 sentence-transformers
 langchain
 langchain-openai
+google-auth
 streamlit
 python-dotenv
 pypdf

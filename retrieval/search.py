@@ -6,18 +6,25 @@ from qdrant_client.models import (
 )
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from fastembed import SparseTextEmbedding
+import google.auth
+import google.auth.transport.requests
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 import streamlit as st
 from config import (
     QDRANT_URL, QDRANT_API_KEY, EMBEDDING_MODEL,
-    COLLECTION_NAME, GEMINI_API_KEY, GEMINI_BASE_URL, LLM_MODEL
+    COLLECTION_NAME, GEMINI_BASE_URL, LLM_MODEL
 )
 
 RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
 
 client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, timeout=60)
-llm = ChatOpenAI(api_key=GEMINI_API_KEY, base_url=GEMINI_BASE_URL, model=LLM_MODEL)
+
+@st.cache_resource(ttl=3500)
+def get_llm():
+    creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+    creds.refresh(google.auth.transport.requests.Request())
+    return ChatOpenAI(api_key=creds.token, base_url=GEMINI_BASE_URL, model=LLM_MODEL)
 
 @st.cache_resource
 def get_dense_embedder():
@@ -152,5 +159,5 @@ def search(query: str, framework: str = None, doc_type: str = None, top_k: int =
         SystemMessage(content=f"你是一个 AI 技术文档助手。根据以下文档内容回答用户问题，{lang_instruction}，回答要简洁准确。"),
         HumanMessage(content=f"文档内容：\n{context}\n\n问题：{query}"),
     ]
-    response = llm.invoke(messages)
+    response = get_llm().invoke(messages)
     return response.content, sources

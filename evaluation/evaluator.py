@@ -5,8 +5,10 @@ from ragas.metrics import Faithfulness, AnswerRelevancy
 from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from langchain_core.embeddings import Embeddings
+import google.auth
+import google.auth.transport.requests
 from langchain_openai import ChatOpenAI
-from config import GEMINI_API_KEY, GEMINI_BASE_URL, LLM_MODEL
+from config import GEMINI_BASE_URL, LLM_MODEL
 from retrieval.search import get_dense_embedder
 
 try:
@@ -28,7 +30,9 @@ class _STEmbeddings(Embeddings):
 
 @st.cache_resource
 def _get_ragas_llm() -> LangchainLLMWrapper:
-    return LangchainLLMWrapper(ChatOpenAI(api_key=GEMINI_API_KEY, base_url=GEMINI_BASE_URL, model=LLM_MODEL))
+    creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+    creds.refresh(google.auth.transport.requests.Request())
+    return LangchainLLMWrapper(ChatOpenAI(api_key=creds.token, base_url=GEMINI_BASE_URL, model=LLM_MODEL))
 
 
 @st.cache_resource
