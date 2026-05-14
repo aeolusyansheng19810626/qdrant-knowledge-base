@@ -1,3 +1,12 @@
+import os, json, tempfile
+
+_gcp_creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
+if _gcp_creds_json and not os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
+    _tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
+    json.dump(json.loads(_gcp_creds_json), _tmp)
+    _tmp.close()
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = _tmp.name
+
 import streamlit as st
 from ingestion.loader import upload_document, client, ensure_collection
 from retrieval.search import search
