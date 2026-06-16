@@ -1,5 +1,18 @@
+import sys
+import types
 import math
 import streamlit as st
+
+# ragas 0.2.15 硬编码了此路径，但 langchain-community ≥0.4 已移除；注入 shim
+if "langchain_community.chat_models.vertexai" not in sys.modules:
+    try:
+        from langchain_google_vertexai import ChatVertexAI as _CV
+        _shim = types.ModuleType("langchain_community.chat_models.vertexai")
+        _shim.ChatVertexAI = _CV
+        sys.modules["langchain_community.chat_models.vertexai"] = _shim
+    except ImportError:
+        pass
+
 from ragas import evaluate, EvaluationDataset, SingleTurnSample
 from ragas.metrics import Faithfulness, AnswerRelevancy
 from ragas.llms import LangchainLLMWrapper
